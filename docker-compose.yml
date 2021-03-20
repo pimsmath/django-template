@@ -1,0 +1,28 @@
+version: '3.9'
+
+services:
+  web:
+    build:
+      context: .
+      args:
+        - ENVIRONMENT=development
+    command: gunicorn config.wsgi -b 0.0.0.0:8000
+    env_file:
+      - .env-development
+    volumes:
+      - type: bind
+        source: ./app
+        target: /app
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+  db:
+    image: postgres:13
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    env_file:
+      - .env-development
+
+volumes:
+  postgres_data:
