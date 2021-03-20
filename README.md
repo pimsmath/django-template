@@ -1,9 +1,9 @@
-# New Django Environments
+# Django Environment Template
 
 We have standardized on [docker-compose](https://docs.docker.com/compose/) to
 provide reproducible django development environments.  Each environment consists
-of a web server (running via gunicorn) and a database server (postgresql), with
-persistent storage provided by a docker volume. We use
+of a django application server (running via gunicorn) and a database server
+running postgresql. Persistent storage is provided by a docker volume. We use
 [pipenv](https://pypi.org/project/pipenv/) for python package management, and
 provide the following base packages
 
@@ -11,58 +11,70 @@ provide the following base packages
   * gunicorn
   * psycopg2-binary
   * django-environ 
+  * ipython [dev]
 
-Your application code is bind mounted into the container to allow for convenient
-development, or it could copied in for production. `docker-compose` is used for
-all management tasks including package installation, logging and `django-admin`
-tasks.
+Application code is bind mounted into the container to allow for convenient
+development, but it could be copied in for production use. `docker-compose` is
+used for all management tasks including package installation, logging and
+`django-admin` tasks.
 
 ## Starting a new project
 
-The only pre-flight steps required are to generate values for the secrets in the
-environment file. Specifically you need to provide values for
-`POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY`. You can generate new values for
-each by running
+To use this template, the only pre-flight step required is to generate values
+for the secrets in the environment file. Specifically you need to provide values
+for `POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY`. e.g.
 ```bash
 $ cp dot-env-template .env-development
 $ python -c 'import secrets; print(f"POSTGRES_PASSWORD=\"{secrets.token_urlsafe()}\"")' >> .env-development
 $ python -c 'import secrets; print(f"DJANGO_SECRET_KEY=\"{secrets.token_urlsafe()}\"")' >> .env-development
 ...
+```
 
-
-Populate those values in `.env-development` and you should be able to bring
-everything up
+You should now be able to start everything with.
 ```bash
 $ docker-compose up -d
 ```
+Your webserver should now be running on
+[http://127.0.0.1:8000](http://127.0.0.1:8000)
 
-## Working within a project
 
-Almost all of your interactions with your new environment should be prefixed by
-`docker-compose`. For example, to install new packages via `pipenv`:
+### Developing a new project
+
+Almost all interactions should be prefixed by `docker-compose`. For example, to
+install new packages via `pipenv`, you would run
+
 ```bash
 $ docker-compose exec web pipenv install django-environ==0.4.5
 ```
-This command will install to an ephemeral virtualenv but the modifications to
-the `Pipfile` will persist. Generally, after installing a package or making a
-configuration change you should restart the app with
+
+This would install
+[django-environ](https://django-environ.readthedocs.io/en/latest/) to an
+ephemeral virtualenv but it will also make a persistent update to the `Pipfile`.
+Generally, after installing a package or making a configuration change you
+should restart the app with
+
 ```bash
 $ docker-compose down && docker-compose up -d --build
 ```
 The `--build` flag will reinstall everything it finds in the `Pipfile`.
 
-Similarly for `django-admin` or `python manage.py`, e.g.
+
+Similarly, you can run `django-admin` or `python manage.py` tasks inside the
+app container via `docker-compose`, e.g.
+
 ```bash
 $ docker-compose exec web python manage.py makemigrations
 $ docker-compose exec web python manage.py migrate
 ```
 
 You can get direct access to the database container with
-```bash
-$ docker-compose exec db psql -U $POSTGRES_USER -W
+
+```bas
+$ source .env-development
+$ docker-compose exec db psql -U $POSTGRES_USER
 ```
 
-You can get access to the interactive shell with
+And you can get access to the interactive shell with
 ```bash
 $ docker-compose exec web python manage.py shell
 ```
@@ -78,7 +90,7 @@ here are only relevant if you want to build a new _template_**.
 
 Building new template involves some awkward dependencies. In general we want to
 keep everything locked up in docker and fully specified in our `Pipfile` but we
-need a working environment to generate that. Additionally, our docker-compose
+needua working environment to generate that. Additionally, our docker-compose
 file assumes that we already have a running django project that we want to
 modify. One way around these dependencies is to install some of them locally
 (outside of docker) and bootstrap the necessary files. For the sake of
@@ -102,8 +114,8 @@ update), they can be generated from the latest Python docker image as follows
 
 ```bash
 $ mkdir app
-$ docker run --rm -v $(pwd)/app:/app -w /app python:3.9 bash -c "\
-    pip install pipenv && \
+$ docker run --rm -v $(pwd)/app:/app -w /app python:3.9 bash -c \
+    "pip install pipenv && \
     pipenv install django==3.1.6 \
     psycopg2-binary==2.8.6 \
     django-environ==0.4.5 \
@@ -116,8 +128,8 @@ those packages.
 
 If you also want to generate a completely fresh django config, you can do
 ```
-$ docker run --rm -v $(pwd)/app:/app -w /app python:3.9 bash -c "\
-    pip install pipenv && pipenv install && \
+$ docker run --rm -v $(pwd)/app:/app -w /app python:3.9 bash -c \
+    "pip install pipenv && pipenv install && \
     pipenv run django-admin startproject config ."
 ```
 
