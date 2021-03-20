@@ -1,11 +1,11 @@
 # Django Environment Template
 
 We have standardized on [docker-compose](https://docs.docker.com/compose/) to
-provide reproducible django development environments.  Each environment consists
-of a django application server (running via gunicorn) and a database server
-running postgresql. Persistent storage is provided by a docker volume. We use
-[pipenv](https://pypi.org/project/pipenv/) for python package management, and
-provide the following base packages
+provide reproducible development environments for django apps. Each new
+environment consists of an application server (running via gunicorn) and a
+database server (running postgresql). Persistent storage is provided by a docker
+volume. We use [pipenv](https://pypi.org/project/pipenv/) for python package
+management, and provide the following base packages
 
   * django
   * gunicorn
@@ -13,15 +13,15 @@ provide the following base packages
   * django-environ 
   * ipython [dev]
 
-Application code is bind mounted into the container to allow for convenient
-development, but it could be copied in for production use. `docker-compose` is
-used for all management tasks including package installation, logging and
+The application code is (bind) mounted into the container to allow for convenient
+development, but it could also be copied in for production use. `docker-compose`
+is used for all management tasks including package installation, logging and
 `django-admin` tasks.
 
 ## Starting a new project
 
-To use this template, the only pre-flight step required is to generate values
-for the secrets in the environment file. Specifically you need to provide values
+To use this template, the only pre-flight required is to generate values for the
+secrets in the environment file. Specifically you will need to provide values
 for `POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY`. e.g.
 ```bash
 $ cp dot-env-template .env-development
@@ -34,14 +34,14 @@ You should now be able to start everything with.
 ```bash
 $ docker-compose up -d
 ```
-Your webserver should now be running on
+The application should now be running at
 [http://127.0.0.1:8000](http://127.0.0.1:8000)
 
 
 ### Developing a new project
 
 Almost all interactions should be prefixed by `docker-compose`. For example, to
-install new packages via `pipenv`, you would run
+install new packages via `pipenv`, run
 
 ```bash
 $ docker-compose exec web pipenv install django-environ==0.4.5
