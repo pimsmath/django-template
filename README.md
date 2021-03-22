@@ -24,10 +24,12 @@ To use this template, the only pre-flight required is to generate values for the
 secrets in the environment file. Specifically you will need to provide values
 for `POSTGRES_PASSWORD` and `DJANGO_SECRET_KEY`. e.g.
 ```bash
-$ cp dot-env-template .env-development
-$ python -c 'import secrets; print(f"POSTGRES_PASSWORD=\"{secrets.token_urlsafe()}\"")' >> .env-development
-$ python -c 'import secrets; print(f"DJANGO_SECRET_KEY=\"{secrets.token_urlsafe()}\"")' >> .env-development
-...
+$ POSTGRES_PASSWORD=$(python -c 'import secrets; print(secrets.token_urlsafe())')
+$ DJANGO_SECRET_KEY=$(python -c 'import secrets; print(secrets.token_urlsafe())')
+$ cat dot-env-template | \
+  sed "s/^POSTGRES_PASSWORD=.*$/POSTGRES_PASSWORD=\"$POSTGRES_PASSWORD\"/g" | \
+  sed "s/^DJANGO_SECRET_KEY=.*$/DJANGO_SECRET_KEY=\"$DJANGO_SECRET_KEY\"/g" | \
+  > .env-development
 ```
 
 You should now be able to start everything with.
