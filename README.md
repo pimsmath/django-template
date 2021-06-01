@@ -92,7 +92,7 @@ here are only relevant if you want to build a new _template_**.
 
 Building new template involves some awkward dependencies. In general we want to
 keep everything locked up in docker and fully specified in our `Pipfile` but we
-needua working environment to generate that. Additionally, our docker-compose
+need a working environment to generate that. Additionally, our docker-compose
 file assumes that we already have a running django project that we want to
 modify. One way around these dependencies is to install some of them locally
 (outside of docker) and bootstrap the necessary files. For the sake of
@@ -118,10 +118,10 @@ update), they can be generated from the latest Python docker image as follows
 $ mkdir app
 $ docker run --rm -v $(pwd)/app:/app -w /app python:3.9 bash -c \
     "pip install pipenv && \
-    pipenv install django==3.1.6 \
+    pipenv install django==3.1.11 \
     psycopg2-binary==2.8.6 \
     django-environ==0.4.5 \
-    gunicorn==20.0.4 && \
+    gunicorn==20.1.0 && \
     pipenv install --dev ipython"
 ```
 
