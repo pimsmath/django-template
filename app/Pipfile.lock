@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "52aa6ee00bfe55f31e81f02867d92776a9f266e0c7b0afbb1c4f0cf7291cf2d7"
+            "sha256": "ee3b9b2d8bbc92779ecf0b23e3ef84c153c5bc5cd6b97bfe6e3525fe43eda5f0"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -26,11 +26,11 @@
         },
         "django": {
             "hashes": [
-                "sha256:0a0a37f0b93aef30c4bf3a839c187e1175bcdeb7e177341da0cb7b8194416891",
-                "sha256:69c94abe5d6b1b088bf475e09b7b74403f943e34da107e798465d2045da27e75"
+                "sha256:2485eea3cc4c3bae13080dee866ebf90ba9f98d1afe8fda89bfb0eb2e218ef86",
+                "sha256:7cd8e8a3ed2bc0dfda05ce1e53a9c81b30eefd7aa350e538a18884475e4d4ce2"
             ],
             "index": "pypi",
-            "version": "==3.2.11"
+            "version": "==4.0.1"
         },
         "django-environ": {
             "hashes": [
@@ -109,13 +109,6 @@
             ],
             "index": "pypi",
             "version": "==2.9.3"
-        },
-        "pytz": {
-            "hashes": [
-                "sha256:3672058bc3453457b622aab7a1c3bfd5ab0bdae451512f6cf25f64ed37f5b87c",
-                "sha256:acad2d8b20a1af07d4e4c9d2e9285c5ed9104354062f275f3fcd88dcef4f1326"
-            ],
-            "version": "==2021.3"
         },
         "setuptools": {
             "hashes": [
